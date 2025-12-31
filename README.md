@@ -1,150 +1,148 @@
-HTP DRAWING ANALYZER
-Ancient Wisdom Meets Modern AI
+# HTP Drawing Analyzer
+## Ancient Wisdom Meets Modern AI
 
-An end-to-end AI-powered psychological drawing analysis system that interprets
-House-Tree-Person (HTP) sketches using YOLOv8, Vision Models, RAG, and
-Prompt Engineering.
+HTP Drawing Analyzer is an AI-powered system designed to analyze
+House-Tree-Person (HTP) drawings and generate structured psychological
+interpretations. The project integrates object detection, vision-based
+reasoning, retrieval-augmented generation (RAG), and prompt engineering
+to simulate the analytical process of an HTP psychologist.
 
-This project evolves through two intelligent AI pipelines, moving from a
-detection-based system to a hybrid vision-intelligence architecture capable of
-deep psychological reasoning.
-
---------------------------------------------------
-WHAT THIS PROJECT DOES
---------------------------------------------------
-- Accepts hand-drawn HTP sketches
-- Detects House, Tree, and Person
-- Classifies object sizes (small / medium / large)
-- Interprets:
-  * Emotional State
-  * Family Relationships
-  * Social Circle
-- Stores user profiles and chat history
-- Responds like an HTP psychologist
+This repository presents two complete approaches, demonstrating the
+evolution from a detection-centric pipeline to a hybrid vision-intelligent
+system.
 
 --------------------------------------------------
-DATA COLLECTION (BACKBONE OF THE PROJECT)
+PROJECT OBJECTIVES
+--------------------------------------------------
+- Analyze hand-drawn HTP sketches
+- Detect House, Tree, and Person elements
+- Classify object sizes (small, medium, large)
+- Infer psychological attributes:
+  - Emotional state
+  - Family relationships
+  - Social circle
+- Maintain user profiles and interaction history
+- Deliver human-readable psychological interpretations
+
+--------------------------------------------------
+DATA COLLECTION
 --------------------------------------------------
 
-This project is built on a custom-curated dataset collected manually due to the
-absence of publicly available HTP datasets.
+Due to the absence of publicly available datasets for HTP analysis,
+all data used in this project was collected and curated manually.
 
 HUMAN-DRAWN DATA
 ----------------
-- Multiple on-campus data collection drives
+- Multiple in-person data collection drives
 - Drawings collected from students across departments
-- All sketches followed the HTP (House-Tree-Person) format
-- Images were:
-  * Photographed manually
-  * Cleaned and filtered
-  * Digitized carefully to preserve drawing details
+- All drawings followed the House-Tree-Person format
+- Sketches were photographed, cleaned, filtered, and digitized
 
-Final human-drawn images used: approximately 105
+Total human-drawn images retained: approximately 105
 
 AI-GENERATED DATA
 -----------------
-To overcome dataset limitations, AI-generated sketches were added.
+To increase dataset diversity and robustness, AI-generated sketches
+were incorporated.
 
 Prompt used:
-"Draw on a blank A4 sheet using a pencil. The drawing should look like it was
-made by a 5-6 year old child."
+"Draw on a blank A4 sheet using a pencil. The drawing should look like it
+was made by a 5-6 year old child."
 
-Ensured:
-- Pencil-like texture
+Characteristics ensured:
+- Pencil-style texture
 - Child-like proportions
 - Consistent HTP structure
 
 AI-generated images: approximately 95
 
-FINAL DATASET SUMMARY
----------------------
+FINAL DATASET OVERVIEW
+----------------------
 Human-drawn images: ~105
 AI-generated images: ~95
-Total base dataset: 200
+Total base dataset: 200 images
 After augmentation: 542 images
 
 --------------------------------------------------
-ANNOTATION AND AUGMENTATION
+DATA ANNOTATION AND AUGMENTATION
 --------------------------------------------------
-Tool used: Roboflow
+Annotation tool: Roboflow
 
-Bounding boxes created for:
-- House
-- Tree
-- Person
+Annotations:
+- Bounding boxes for House, Tree, and Person
 
-Augmentations applied:
+Augmentation techniques:
 - Rotation
-- Brightness and exposure adjustment
+- Brightness and exposure variation
 - Blur and noise
 - Shear transformations
 
-This significantly improved YOLO generalization.
+These steps significantly improved YOLO model generalization.
 
 --------------------------------------------------
-OBJECT DETECTION (YOLOv8)
+OBJECT DETECTION USING YOLOv8
 --------------------------------------------------
-- Trained using YOLOv8
-- Achieved approximately 98-99 percent detection accuracy
-- Used exclusively for:
-  * Object detection
-  * Size classification
+- Model: YOLOv8
+- Detection accuracy: approximately 98-99 percent
+- Responsibilities:
+  - Object detection
+  - Area-based size classification
 
 --------------------------------------------------
-YOLO ANNOTATED OUTPUT (EXAMPLE)
+YOLO ANNOTATED OUTPUT
 --------------------------------------------------
-Annotated image uploaded in repository:
 
-yolo-result.jpg
+Example YOLOv8 detection result from the project:
+
+![YOLO Annotated Output](yolo-result.jpg)
 
 Detected elements:
 - Tree   (confidence: 0.77)
 - House  (confidence: 0.91)
 - Person (confidence: 0.85)
 
-These detections are later used for area-ratio-based size classification.
+Bounding box areas are later used to compute size ratios.
 
 --------------------------------------------------
-INTELLIGENT SIZE CLASSIFICATION
+AREA-BASED SIZE CLASSIFICATION
 --------------------------------------------------
-Instead of comparing objects with each other, the system:
-- Calculates bounding box area divided by full image area
+Instead of comparing objects relative to each other, the system:
+- Computes bounding box area divided by total image area
 - Assigns size labels:
-  * Small
-  * Medium
-  * Large
+  - Small
+  - Medium
+  - Large
 
-This approach mimics human perception while remaining mathematically consistent.
+This approach enables consistent and human-aligned interpretation.
 
 --------------------------------------------------
-SYSTEM ARCHITECTURE - TWO APPROACHES
+SYSTEM ARCHITECTURE
 --------------------------------------------------
 
 APPROACH 1
 YOLO + RAG (PDF + CSV + DATABASE) + CHATBOT
 --------------------------------------------------
 
-UI Screenshot (uploaded in repository):
-YOLO + RAG (PDF + CSV + Database) + Chatbot.png
+User interface example:
+
+![Approach 1 UI](YOLO + RAG (PDF + CSV + Database) + Chatbot.png)
 
 Pipeline:
 1. YOLO detects objects
-2. RAG retrieves:
-   - HTP psychology PDF
-   - CSV dataset
+2. RAG retrieves information from:
+   - HTP psychology reference PDF
+   - CSV feature dataset
    - User database
 3. Chatbot generates interpretation
 
-Pros:
-- Stable
-- Memory-aware (user profiles and history)
-- Good baseline performance (approximately 85 percent)
+Strengths:
+- Stable and reliable
+- Maintains user identity and history
+- Suitable as a baseline solution
 
-Cons:
-- No deep visual understanding
+Limitations:
+- Lacks deep visual understanding
 - Fully dependent on YOLO detections
-
-Reliable, but context-limited.
 
 --------------------------------------------------
 
@@ -152,34 +150,34 @@ APPROACH 2 (FINAL AND PREFERRED)
 YOLO + RAG (DATABASE) + VISION MODEL + PROMPT ENGINEERING
 --------------------------------------------------
 
-UI Screenshot (uploaded in repository):
-YOLO + RAG (Database) + Vision Model + Prompt Engineering.png
+User interface example:
+
+![Approach 2 UI](YOLO + RAG (Database) + Vision Model + Prompt Engineering.png)
 
 Pipeline:
 1. YOLO performs object detection and size classification
-2. Vision model performs full image understanding
-3. Prompt engineering enforces HTP psychologist behavior
-4. Database stores user memory and interaction history
+2. Vision model analyzes the image holistically
+3. Prompt engineering aligns outputs with HTP psychology
+4. Database preserves user memory and interaction history
 
-Why this works better:
-- Vision model compensates for YOLO misses
-- Rich psychological interpretation
-- Context-aware reasoning
-- Closest to human-level analysis
+Advantages:
+- Vision model compensates for YOLO detection limitations
+- Context-aware and semantically rich interpretations
+- Closest approximation to human psychological analysis
 
-This is the final production-grade system.
+This is the final and production-grade system.
 
 --------------------------------------------------
-FAILED MODELS AND KEY LEARNINGS
+EXPERIMENTED ML MODELS AND LEARNINGS
 --------------------------------------------------
-- Random Forest: overfitting due to class imbalance
+- Random Forest: overfitting caused by class imbalance
 - XGBoost: high accuracy but poor generalization
 
-Key lesson:
-Accuracy is meaningless without reasoning.
+Key insight:
+High accuracy alone does not imply meaningful reasoning.
 
 --------------------------------------------------
-TECH STACK
+TECHNOLOGY STACK
 --------------------------------------------------
 - Python
 - YOLOv8
@@ -194,8 +192,8 @@ TECH STACK
 --------------------------------------------------
 PROJECT STATUS
 --------------------------------------------------
-Completed
-Open for future research and improvements
+Completed.
+Open to future research and extensions.
 
 --------------------------------------------------
 ACKNOWLEDGEMENTS
@@ -207,6 +205,5 @@ Core Contributor:
 Zain (Sam)
 
 --------------------------------------------------
-If this project impressed you, consider giving it a star.
-This is not just a model, it is a complete AI system.
+This repository represents a complete AI system rather than a single model.
 --------------------------------------------------
