@@ -5,7 +5,7 @@ HTP Drawing Analyzer is an AI-powered system designed to analyze
 House-Tree-Person (HTP) drawings and generate structured psychological
 interpretations. The project integrates object detection, vision-based
 reasoning, retrieval-augmented generation (RAG), and prompt engineering
-to simulate the analytical process of an HTP psychologist.
+to simulate the analytical workflow of an HTP psychologist.
 
 This repository presents two complete approaches, demonstrating the
 evolution from a detection-centric pipeline to a hybrid vision-intelligent
@@ -77,8 +77,6 @@ Augmentation techniques:
 - Blur and noise
 - Shear transformations
 
-These steps significantly improved YOLO model generalization.
-
 --------------------------------------------------
 OBJECT DETECTION USING YOLOv8
 --------------------------------------------------
@@ -101,20 +99,6 @@ Detected elements:
 - House  (confidence: 0.91)
 - Person (confidence: 0.85)
 
-Bounding box areas are later used to compute size ratios.
-
---------------------------------------------------
-AREA-BASED SIZE CLASSIFICATION
---------------------------------------------------
-Instead of comparing objects relative to each other, the system:
-- Computes bounding box area divided by total image area
-- Assigns size labels:
-  - Small
-  - Medium
-  - Large
-
-This approach enables consistent and human-aligned interpretation.
-
 --------------------------------------------------
 SYSTEM ARCHITECTURE
 --------------------------------------------------
@@ -123,7 +107,7 @@ APPROACH 1
 YOLO + RAG (PDF + CSV + DATABASE) + CHATBOT
 --------------------------------------------------
 
-User interface example:
+User Interface Screenshot:
 
 ![Approach 1 UI](YOLO + RAG (PDF + CSV + Database) + Chatbot.png)
 
@@ -138,7 +122,7 @@ Pipeline:
 Strengths:
 - Stable and reliable
 - Maintains user identity and history
-- Suitable as a baseline solution
+- Suitable as a baseline system
 
 Limitations:
 - Lacks deep visual understanding
@@ -150,7 +134,7 @@ APPROACH 2 (FINAL AND PREFERRED)
 YOLO + RAG (DATABASE) + VISION MODEL + PROMPT ENGINEERING
 --------------------------------------------------
 
-User interface example:
+User Interface Screenshot:
 
 ![Approach 2 UI](YOLO + RAG (Database) + Vision Model + Prompt Engineering.png)
 
@@ -165,12 +149,12 @@ Advantages:
 - Context-aware and semantically rich interpretations
 - Closest approximation to human psychological analysis
 
-This is the final and production-grade system.
+This is the final production-grade system.
 
 --------------------------------------------------
 EXPERIMENTED ML MODELS AND LEARNINGS
 --------------------------------------------------
-- Random Forest: overfitting caused by class imbalance
+- Random Forest: overfitting due to class imbalance
 - XGBoost: high accuracy but poor generalization
 
 Key insight:
@@ -193,7 +177,7 @@ TECHNOLOGY STACK
 PROJECT STATUS
 --------------------------------------------------
 Completed.
-Open to future research and extensions.
+Open for future research and extensions.
 
 --------------------------------------------------
 ACKNOWLEDGEMENTS
