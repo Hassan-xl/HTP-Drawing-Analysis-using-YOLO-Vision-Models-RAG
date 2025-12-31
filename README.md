@@ -3,33 +3,32 @@
 
 HTP Drawing Analyzer is an AI-powered system designed to analyze
 House-Tree-Person (HTP) drawings and generate structured psychological
-interpretations. The system combines object detection, vision-based
+interpretations. The system integrates object detection, vision-based
 reasoning, retrieval-augmented generation (RAG), and prompt engineering
-to simulate the analytical behavior of an HTP psychologist.
+to simulate the analytical workflow of an HTP psychologist.
 
-This repository presents two complete AI pipelines, showcasing the
-evolution from a detection-centric approach to a hybrid vision-based
+This repository presents two complete AI approaches, demonstrating the
+evolution from a detection-centric pipeline to a hybrid vision-based
 intelligent system.
 
---------------------------------------------------
-PROJECT HIGHLIGHTS
---------------------------------------------------
-- End-to-end AI system (not just a model)
+---
+
+## Project Highlights
+- End-to-end AI system (not just a single model)
 - Custom-collected HTP dataset
 - YOLOv8-based object detection
 - Vision-model-driven psychological reasoning
 - Memory-aware user interaction
-- Two distinct architectural approaches
+- Two distinct system architectures
 
---------------------------------------------------
-DATA COLLECTION
---------------------------------------------------
+---
 
-Due to the lack of publicly available datasets for HTP analysis, the
-entire dataset used in this project was collected and curated manually.
+## Data Collection
 
-HUMAN-DRAWN DATA
-----------------
+Due to the absence of publicly available datasets for HTP analysis,
+the entire dataset used in this project was collected and curated manually.
+
+### Human-Drawn Data
 - Multiple on-campus data collection drives
 - Drawings collected from students across departments
 - All sketches followed the House-Tree-Person format
@@ -37,26 +36,24 @@ HUMAN-DRAWN DATA
 
 Total human-drawn images retained: approximately 105
 
-AI-GENERATED DATA
------------------
-To improve robustness and diversity, AI-generated sketches were added.
+### AI-Generated Data
+To improve dataset robustness and diversity, AI-generated sketches were added.
 
 Prompt used:
-"Draw on a blank A4 sheet using a pencil. The drawing should look like it
-was made by a 5-6 year old child."
+Draw on a blank A4 sheet using a pencil. The drawing should look like it
+was made by a 5–6 year old child.
 
 AI-generated images: approximately 95
 
-FINAL DATASET SUMMARY
----------------------
-Human-drawn images: ~105
-AI-generated images: ~95
-Total base dataset: 200 images
-After augmentation: 542 images
+### Final Dataset Summary
+- Human-drawn images: ~105
+- AI-generated images: ~95
+- Total base dataset: 200 images
+- After augmentation: 542 images
 
---------------------------------------------------
-ANNOTATION AND AUGMENTATION
---------------------------------------------------
+---
+
+## Annotation and Augmentation
 - Tool used: Roboflow
 - Bounding boxes created for:
   - House
@@ -68,31 +65,32 @@ ANNOTATION AND AUGMENTATION
   - Blur and noise
   - Shear transformations
 
---------------------------------------------------
-YOLOv8 OBJECT DETECTION
---------------------------------------------------
+---
+
+## YOLOv8 Object Detection
 - Model: YOLOv8
-- Detection accuracy: approximately 98-99 percent
+- Detection accuracy: approximately 98–99 percent
 - Responsibilities:
   - Object detection
   - Area-based size classification
 
---------------------------------------------------
-YOLO ANNOTATED OUTPUT
---------------------------------------------------
+---
+
+## YOLO Annotated Output
 
 Example YOLOv8 detection result from the project:
 
-![YOLO Annotated Output](images/yolo-result.jpg)
+![YOLO Annotated Output](yolo-result.jpg)
 
 Detected elements:
-- Tree   (confidence: 0.77)
-- House  (confidence: 0.91)
+- Tree (confidence: 0.77)
+- House (confidence: 0.91)
 - Person (confidence: 0.85)
 
---------------------------------------------------
-INTELLIGENT SIZE CLASSIFICATION
---------------------------------------------------
+---
+
+## Intelligent Size Classification
+
 Instead of comparing objects with each other, the system:
 - Computes bounding box area divided by total image area
 - Assigns size labels:
@@ -102,17 +100,16 @@ Instead of comparing objects with each other, the system:
 
 This approach enables consistent and human-aligned interpretation.
 
---------------------------------------------------
-SYSTEM ARCHITECTURE
---------------------------------------------------
+---
 
-APPROACH 1
-YOLO + RAG (PDF + CSV + DATABASE) + CHATBOT
---------------------------------------------------
+## System Architecture
+
+### Approach 1  
+**YOLO + RAG (PDF + CSV + Database) + Chatbot**
 
 User Interface Preview:
 
-![Approach 1 UI](images/approach1_ui.png)
+![Approach 1 UI](approach1_ui/approach1_ui.png)
 
 Pipeline:
 1. YOLO detects objects in the drawing
@@ -131,15 +128,14 @@ Limitations:
 - No deep visual understanding
 - Fully dependent on YOLO detections
 
---------------------------------------------------
+---
 
-APPROACH 2 (FINAL AND PREFERRED)
-YOLO + RAG (DATABASE) + VISION MODEL + PROMPT ENGINEERING
---------------------------------------------------
+### Approach 2 (Final and Preferred)  
+**YOLO + RAG (Database) + Vision Model + Prompt Engineering**
 
 User Interface Preview:
 
-![Approach 2 UI](images/approach2_ui.png)
+![Approach 2 UI](approach2_ui/approach2_ui.png)
 
 Pipeline:
 1. YOLO performs object detection and size classification
@@ -154,18 +150,18 @@ Why this approach is superior:
 
 This is the final production-grade system.
 
---------------------------------------------------
-EXPERIMENTED MODELS AND KEY LEARNINGS
---------------------------------------------------
+---
+
+## Experimented Models and Key Learnings
 - Random Forest: failed due to class imbalance and overfitting
 - XGBoost: high accuracy but poor generalization
 
 Key insight:
-High accuracy does not imply meaningful intelligence.
+**High accuracy does not imply meaningful intelligence.**
 
---------------------------------------------------
-TECHNOLOGY STACK
---------------------------------------------------
+---
+
+## Technology Stack
 - Python
 - YOLOv8
 - OpenAI Vision Model 4.1
@@ -176,21 +172,21 @@ TECHNOLOGY STACK
 - Google Colab
 - CSV handling and database integration
 
---------------------------------------------------
-PROJECT STATUS
---------------------------------------------------
-Completed.
+---
+
+## Project Status
+Completed.  
 Open for future research, scaling, and improvements.
 
---------------------------------------------------
-ACKNOWLEDGEMENTS
---------------------------------------------------
-Project Supervisor:
-Abdullah Sajid
+---
 
-Core Contributor:
+## Acknowledgements
+Project Supervisor:  
+Abdullah Sajid  
+
+Core Contributor:  
 Zain (Sam)
 
---------------------------------------------------
+---
+
 This repository represents a complete AI system rather than a single model.
---------------------------------------------------
