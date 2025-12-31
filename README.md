@@ -1,0 +1,2 @@
+# HTP-Drawing-Analysis-using-YOLO-Vision-Models-RAG
+This project is an AI-based system that analyzes House-Tree-Person (HTP) drawings and extracts psychological insights such as emotional state, family relationship, and social circle.  The project combines computer vision, object detection, prompt engineering, and retrieval-augmented generation (RAG) to simulate the reasoning of an HTP psychologist.
