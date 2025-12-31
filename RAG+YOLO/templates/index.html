@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTP Drawing Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Added music player CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='music-player.css') }}">
+</head>
+<body>
+
+<!-- Added audio element and mute button -->
+<audio id="bgMusic" loop>
+    <source src="/static/Tenununnuuu.mp3" type="audio/mpeg">
+</audio>
+    
+<button id="muteBtn" class="mute-button" title="Mute/Unmute Music" style="position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ffed4e); border: 2px solid #daa520; font-size: 24px; cursor: pointer; z-index: 9999; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); transition: all 0.3s ease;">
+    <span class="mute-icon">🔊</span>
+</button>
+
+<!-- Added background pyramids and mummy elements -->
+<div class="pyramid-bg pyramid-1"></div>
+<div class="pyramid-bg pyramid-2"></div>
+<div class="pyramid-bg pyramid-3"></div>
+
+<!-- Mummy animations in background -->
+<div class="mummy-float mummy-1">𓀲</div>
+<div class="mummy-float mummy-2">𓁆</div>
+
+<!-- Fire effects container -->
+<div class="fire-container">
+    <div class="flame flame-1"></div>
+    <div class="flame flame-2"></div>
+    <div class="flame flame-3"></div>
+</div>
+
+<!-- Gold particles floating -->
+<div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="container">
+    <!-- Hieroglyphic top border -->
+    <div class="hieroglyphic-border">𓂀 𓇳 𓏠 𓂡 𓀀 𓂀 𓇳 𓏠</div>
+
+    <!-- Main Title with Gold Glow -->
+    <h2 class="title-gold">𓂀 HTP Drawing Analyzer 𓂀</h2>
+    <div class="subtitle-glow">Ancient Wisdom Meets Modern Analysis</div>
+
+    <!-- User Info -->
+    {% if username %}
+    <div class="user-badge">
+        Welcome, {{ username }} 👑
+        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+    </div>
+    {% endif %}
+
+    <!-- Upload Form -->
+    <form method="POST" enctype="multipart/form-data" class="form-golden">
+        <div class="input-wrapper">
+            <input type="file" name="image" required>
+            <label class="file-label">Choose Your Sacred Drawing</label>
+        </div>
+        <button type="submit" class="button-fire">
+            <span class="button-text">⚡ ANALYZE WITH DIVINE POWER ⚡</span>
+            <div class="button-glow"></div>
+        </button>
+    </form>
+
+    <!-- Analysis Output -->
+    {% if output %}
+    <div class="output-box glow-box">
+        <h3 class="output-title">𓇳 Sacred Analysis 𓇳</h3>
+        <div class="scroll-container">
+            <pre class="analysis-text">{{ output }}</pre>
+        </div>
+        <div class="gold-accent"></div>
+    </div>
+
+    <!-- Pharao Chatbot Interface -->
+    <div class="pharao-chat-container">
+        <div class="pharao-header">
+            <h3 class="pharao-title">🏛️ Speak with the Pharao 🏛️</h3>
+            <p class="pharao-subtitle">The ancient wisdom keeper knows your drawing's secrets</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message pharao-message">
+                <div class="message-avatar">🏛️</div>
+                <div class="message-content">
+                    Greetings, {{ username }}. I am the Pharao, keeper of ancient wisdom. I have examined your drawing through the lens of sacred knowledge, and I sense much within it. Ask me anything about your symbols, your essence revealed through this creation, and I shall illuminate the truth for you. What weighs upon your heart, {{ username }}?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                id="chatInput" 
+                class="chat-input" 
+                placeholder="Ask the Pharao a question..."
+                data-analysis-id="{{ analysis_id }}"
+            >
+            <button id="chatSendBtn" class="chat-send-btn">Send</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- YOLO Annotated Image -->
+    {% if annotated_image %}
+    <div class="output-box glow-box image-box">
+        <h3 class="output-title">𓏠 Divine Detection 𓏠</h3>
+        <div class="image-frame">
+            <img src="{{ annotated_image }}" class="detection-image">
+        </div>
+        <div class="gold-accent"></div>
+    </div>
+    {% endif %}
+
+    <!-- Hieroglyphic bottom border -->
+    <div class="hieroglyphic-border">𓏠 𓂡 𓀀 𓂀 𓇳 𓏠 𓂡 𓀀</div>
+</div>
+
+<!-- Added chat script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const chatMessages = document.getElementById('chatMessages');
+
+    if (!chatInput) return;
+
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        const analysisId = chatInput.dataset.analysisId;
+
+        // Add user message to chat
+        const userMessageEl = document.createElement('div');
+        userMessageEl.className = 'chat-message user-message';
+        userMessageEl.innerHTML = `
+            <div class="message-avatar">👤</div>
+            <div class="message-content">${message}</div>
+        `;
+        chatMessages.appendChild(userMessageEl);
+        chatInput.value = '';
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Send to backend
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message,
+                    analysis_id: analysisId
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Add Pharao response
+                const pharaoMessageEl = document.createElement('div');
+                pharaoMessageEl.className = 'chat-message pharao-message';
+                pharaoMessageEl.innerHTML = `
+                    <div class="message-avatar">🏛️</div>
+                    <div class="message-content">${data.reply}</div>
+                `;
+                chatMessages.appendChild(pharaoMessageEl);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        } catch (error) {
+            console.error('Chat error:', error);
+        }
+    }
+
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
+</script>
+
+<!-- Added music player script -->
+<script>
+    // Save audio state before page unload
+    window.addEventListener('beforeunload', () => {
+        const bgMusic = document.getElementById('bgMusic');
+        localStorage.setItem('musicTime', bgMusic.currentTime);
+    });
+
+    const bgMusic = document.getElementById('bgMusic');
+    const muteBtn = document.getElementById('muteBtn');
+    
+    // Restore mute state from localStorage
+    const isMuted = localStorage.getItem('musicMuted') === 'true';
+    bgMusic.muted = isMuted;
+    
+    // Restore playback time from localStorage
+    const savedTime = localStorage.getItem('musicTime');
+    if (savedTime) {
+        bgMusic.currentTime = parseFloat(savedTime);
+    }
+    
+    function updateMuteButton() {
+        const icon = muteBtn.querySelector('.mute-icon');
+        if (bgMusic.muted) {
+            icon.textContent = '🔇';
+            muteBtn.classList.add('muted');
+        } else {
+            icon.textContent = '🔊';
+            muteBtn.classList.remove('muted');
+        }
+    }
+    
+    updateMuteButton();
+    
+    // Try to play audio (may be blocked by browser autoplay policies)
+    bgMusic.play().catch(() => {
+        console.log('Autoplay blocked - user interaction required');
+    });
+    
+    // Mute button click handler
+    muteBtn.addEventListener('click', () => {
+        bgMusic.muted = !bgMusic.muted;
+        localStorage.setItem('musicMuted', bgMusic.muted);
+        updateMuteButton();
+    });
+</script>
+
+</body>
+</html>

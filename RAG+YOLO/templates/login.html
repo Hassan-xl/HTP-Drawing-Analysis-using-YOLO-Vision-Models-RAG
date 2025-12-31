@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HTP Drawing Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 25%, #0f0f1f 50%, #1a1f3a 75%, #0a0e27 100%);
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 105, 180, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .pyramid {
+            position: fixed;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .pyramid-1 {
+            top: 10%;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .pyramid-2 {
+            bottom: 10%;
+            right: 5%;
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #daa520 0%, #8b6914 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: float 18s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(5deg); }
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: linear-gradient(135deg, rgba(10, 24, 40, 0.95) 0%, rgba(20, 35, 50, 0.95) 100%);
+            backdrop-filter: blur(30px);
+            border: 2px solid #ffd700;
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 0 60px rgba(255, 215, 0, 0.6),
+                0 0 100px rgba(255, 69, 0, 0.3),
+                inset 0 0 30px rgba(255, 215, 0, 0.1);
+            animation: cardGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), 0 0 100px rgba(255, 69, 0, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), 0 0 150px rgba(255, 69, 0, 0.5); }
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff8dc 0%, #ffd700 50%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: rgba(255, 215, 0, 0.7);
+            font-size: 14px;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: #fffacd;
+            font-size: 15px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 10px rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder {
+            color: rgba(255, 215, 0, 0.4);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #ff6347 100%);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 69, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 69, 0, 0.8);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 215, 0, 0.6);
+            font-size: 14px;
+        }
+
+        .auth-link a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .auth-link a:hover {
+            color: #ffa500;
+            border-bottom-color: #ffa500;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+
+        .mummy-symbol {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
+            animation: mummyBob 3s ease-in-out infinite;
+        }
+
+        @keyframes mummyBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Mute button styling */
+        .mute-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border: 2px solid #daa520;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .mute-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+        }
+
+        .mute-button.muted {
+            background: linear-gradient(135deg, #888, #aaa);
+            border-color: #666;
+            box-shadow: 0 0 15px rgba(100, 100, 100, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio element with persistent playback -->
+    <audio id="bgMusic" loop>
+        <source src="/static/Tenununnuuu.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Mute button -->
+    <button id="muteBtn" class="mute-button" title="Mute/Unmute Music">
+        <span class="mute-icon">🔊</span>
+    </button>
+
+    <div class="pyramid pyramid-1"></div>
+    <div class="pyramid pyramid-2"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="mummy-symbol">𓀲</div>
+            <div class="auth-title">ENTER THE TOMB</div>
+            <div class="auth-subtitle">Ancient Wisdom Awaits</div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your name..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your secret..." required>
+                </div>
+                <button type="submit" class="login-btn">⚡ Login ⚡</button>
+            </form>
+
+            <div class="auth-link">
+                New seeker? <a href="{{ url_for('signup') }}">Join the journey</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('beforeunload', () => {
+            const bgMusic = document.getElementById('bgMusic');
+            localStorage.setItem('musicTime', bgMusic.currentTime);
+        });
+
+        const bgMusic = document.getElementById('bgMusic');
+        const muteBtn = document.getElementById('muteBtn');
+        
+        // Restore mute state
+        const isMuted = localStorage.getItem('musicMuted') === 'true';
+        bgMusic.muted = isMuted;
+        
+        // Restore playback time
+        const savedTime = localStorage.getItem('musicTime');
+        if (savedTime) {
+            bgMusic.currentTime = parseFloat(savedTime);
+        }
+        
+        function updateMuteButton() {
+            const icon = muteBtn.querySelector('.mute-icon');
+            if (bgMusic.muted) {
+                icon.textContent = '🔇';
+                muteBtn.classList.add('muted');
+            } else {
+                icon.textContent = '🔊';
+                muteBtn.classList.remove('muted');
+            }
+        }
+        
+        updateMuteButton();
+        
+        bgMusic.play().catch(() => {
+            console.log('Autoplay blocked');
+        });
+        
+        muteBtn.addEventListener('click', () => {
+            bgMusic.muted = !bgMusic.muted;
+            localStorage.setItem('musicMuted', bgMusic.muted);
+            updateMuteButton();
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = data.redirect;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

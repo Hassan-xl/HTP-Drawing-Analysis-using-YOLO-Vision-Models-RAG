@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - HTP Drawing Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0805 0%, #1a1410 50%, #2d1f15 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Added 3D perspective for walking characters */
+        .scene-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            perspective: 1200px;
+            pointer-events: none;
+        }
+
+        /* Particle system for magical dust effects */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0));
+            border-radius: 50%;
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+            animation: particleFloat 8s infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* 3D walking mummy character */
+        .walking-character {
+            position: absolute;
+            bottom: 15%;
+            font-size: 120px;
+            animation: walkAcross 20s linear infinite;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8))
+                    drop-shadow(0 0 40px rgba(255, 215, 0, 0.4));
+            transform-style: preserve-3d;
+        }
+
+        .character-1 {
+            left: -150px;
+            animation: walkAcross 25s linear infinite;
+            animation-delay: 0s;
+            opacity: 0.7;
+            font-size: 100px;
+        }
+
+        .character-2 {
+            left: -200px;
+            bottom: 25%;
+            animation: walkAcross 22s linear infinite;
+            animation-delay: 5s;
+            opacity: 0.6;
+            font-size: 110px;
+        }
+
+        .character-3 {
+            left: -180px;
+            bottom: 18%;
+            animation: walkAcross 28s linear infinite;
+            animation-delay: 10s;
+            opacity: 0.65;
+            font-size: 105px;
+        }
+
+        .character-4 {
+            left: -150px;
+            bottom: 22%;
+            animation: walkAcross 24s linear infinite;
+            animation-delay: 15s;
+            opacity: 0.7;
+            font-size: 115px;
+        }
+
+        @keyframes walkAcross {
+            0% {
+                left: -200px;
+                transform: translateZ(0) scaleX(0.8) rotateY(5deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateZ(100px) scaleX(1) rotateY(0deg);
+            }
+            95% {
+                opacity: 0.6;
+            }
+            100% {
+                left: 110%;
+                transform: translateZ(0) scaleX(0.8) rotateY(-5deg);
+                opacity: 0;
+            }
+        }
+
+        /* Legs animation for walking effect */
+        .leg-animation {
+            animation: legSwing 0.8s ease-in-out infinite;
+        }
+
+        @keyframes legSwing {
+            0%, 100% { transform: rotateX(0deg); }
+            50% { transform: rotateX(15deg); }
+        }
+
+        /* Floating pyramid background */
+        .pyramid-bg {
+            position: absolute;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .pyramid-left {
+            top: 10%;
+            left: 5%;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: pyramidRotate 30s linear infinite;
+        }
+
+        .pyramid-right {
+            bottom: 5%;
+            right: 8%;
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #daa520 0%, #8b6914 100%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: pyramidRotate 35s linear infinite reverse;
+        }
+
+        @keyframes pyramidRotate {
+            0% { transform: rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateY(360deg) rotateZ(360deg); }
+        }
+
+        /* Hieroglyphic animation */
+        .hieroglyph {
+            position: absolute;
+            font-size: 60px;
+            opacity: 0.1;
+            animation: hieroglyphFloat 12s ease-in-out infinite;
+        }
+
+        .hiero-1 {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .hiero-2 {
+            top: 60%;
+            right: 12%;
+            animation-delay: 3s;
+        }
+
+        @keyframes hieroglyphFloat {
+            0%, 100% { transform: translateY(0) rotateZ(0deg); }
+            50% { transform: translateY(-50px) rotateZ(10deg); }
+        }
+
+        /* Auth container */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 100;
+        }
+
+        /* Enhanced glass morphism card with multiple shadow layers */
+        .auth-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.06) 0%, rgba(255, 215, 0, 0.02) 100%);
+            backdrop-filter: blur(40px);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            padding: 60px 50px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.3),
+                        0 0 120px rgba(255, 105, 180, 0.15),
+                        0 0 200px rgba(255, 69, 0, 0.1),
+                        inset 0 0 60px rgba(255, 215, 0, 0.08),
+                        inset 0 0 100px rgba(255, 215, 0, 0.04);
+            position: relative;
+            z-index: 10;
+            animation: cardSlideIn 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        /* Title with divine glow */
+        .auth-card h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #fff8dc 0%, #ffd700 50%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.8em;
+            margin-bottom: 12px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7));
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7)); }
+            50% { filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1)); }
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: rgba(255, 215, 0, 0.9);
+            font-size: 14px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 26px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Premium input with glow and depth */
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 215, 0, 0.02));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 14px;
+            color: #fffacd;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 215, 0, 0.5);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 215, 0, 0.08));
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6),
+                        inset 0 0 20px rgba(255, 215, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Enhanced submit button */
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ff8c00 100%);
+            border: 2px solid #ffd700;
+            border-radius: 14px;
+            color: #1a1410;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.7),
+                        0 0 80px rgba(255, 69, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 1),
+                        0 0 120px rgba(255, 69, 0, 0.7),
+                        0 0 180px rgba(255, 105, 180, 0.4);
+            background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ff6347 100%);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .form-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            margin: 32px 0;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 14px;
+        }
+
+        .auth-link a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 800;
+            position: relative;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .auth-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            transition: width 0.3s;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+        }
+
+        .auth-link a:hover::after {
+            width: 100%;
+        }
+
+        .auth-link a:hover {
+            color: #ffed4e;
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9));
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 14px 18px;
+            background: rgba(255, 107, 107, 0.12);
+            border-left: 3px solid #ff6b6b;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 45px 30px;
+                max-width: 90%;
+            }
+
+            .auth-card h1 {
+                font-size: 2.2em;
+            }
+
+            .walking-character {
+                font-size: 80px;
+                bottom: 10%;
+            }
+
+            .pyramid-bg {
+                display: none;
+            }
+
+            .hieroglyph {
+                font-size: 40px;
+            }
+
+            .form-group input {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Background Music Player -->
+<audio id="bgMusic" loop>
+  <source src="/static/Tenununnuuu.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Mute Button -->
+<button id="muteBtn" class="mute-btn">🔊</button>
+
+<script>
+  const audio = document.getElementById('bgMusic');
+  const muteBtn = document.getElementById('muteBtn');
+  
+  // Check if user previously muted the music
+  if (localStorage.getItem('musicMuted') === 'true') {
+    audio.muted = true;
+    muteBtn.textContent = '🔇';
+  } else {
+    audio.play().catch(() => {
+      // Browser blocked autoplay, wait for user click
+    });
+  }
+  
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+    localStorage.setItem('musicMuted', audio.muted);
+  });
+</script>
+    <!-- 3D Scene with walking characters -->
+    <div class="scene-container">
+        <div class="particles">
+            <div class="particle" style="left: 15%; animation-delay: 0s;"></div>
+            <div class="particle" style="left: 25%; animation-delay: 1s;"></div>
+            <div class="particle" style="left: 35%; animation-delay: 2s;"></div>
+            <div class="particle" style="left: 45%; animation-delay: 3s;"></div>
+            <div class="particle" style="left: 55%; animation-delay: 4s;"></div>
+            <div class="particle" style="left: 65%; animation-delay: 5s;"></div>
+            <div class="particle" style="left: 75%; animation-delay: 6s;"></div>
+            <div class="particle" style="left: 85%; animation-delay: 7s;"></div>
+        </div>
+
+        <!-- Walking mummies and pharaohs -->
+        <div class="walking-character character-1">𓂀</div>
+        <div class="walking-character character-2">𓁶</div>
+        <div class="walking-character character-3">𓂀</div>
+        <div class="walking-character character-4">𓁶</div>
+
+        <!-- Floating pyramids -->
+        <div class="pyramid-bg pyramid-left"></div>
+        <div class="pyramid-bg pyramid-right"></div>
+
+        <!-- Hieroglyphics -->
+        <div class="hieroglyph hiero-1">𓇳 𓏠 𓊽</div>
+        <div class="hieroglyph hiero-2">𓇳 𓏠 𓊽</div>
+    </div>
+
+    <!-- Auth container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>Sign Up</h1>
+            <p class="auth-subtitle">Join the Pharao's Temple</p>
+            
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your sacred name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a secure password" required>
+                </div>
+                
+                
+                <button type="submit" class="btn">✨ Sign Up ✨</button>
+            </form>
+            
+            <div class="auth-link">
+                Already have an account? <a href="{{ url_for('login') }}">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            
+            errorDiv.textContent = '';
+            
+            if (password.length < 6) {
+                errorDiv.textContent = '⚠️ Password must be at least 6 characters';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    errorDiv.textContent = '❌ ' + data.error;
+                }
+            } catch (error) {
+                errorDiv.textContent = '❌ Sign up failed. Try again.';
+            }
+        });
+    </script>
+</body>
+</html>
