@@ -43,6 +43,7 @@ Prompt used:
 Draw on a blank A4 sheet using a pencil. The drawing should look like it
 was made by a 5–6 year old child.
 
+
 AI-generated images: approximately 95
 
 ### Final Dataset Summary
@@ -109,7 +110,7 @@ This approach enables consistent and human-aligned interpretation.
 
 User Interface Preview:
 
-![Approach 1 UI](approach1_ui/approach1_ui.png)
+![Approach 1 UI](approach_1.png)
 
 Pipeline:
 1. YOLO detects objects in the drawing
@@ -135,7 +136,7 @@ Limitations:
 
 User Interface Preview:
 
-![Approach 2 UI](approach2_ui/approach2_ui.png)
+![Approach 2 UI](approach_2.png)
 
 Pipeline:
 1. YOLO performs object detection and size classification
